@@ -255,5 +255,53 @@ namespace Behold_Emailer.Properties {
                 this["bottomRight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string smtp_server_username {
+            get {
+                return ((string)(this["smtp_server_username"]));
+            }
+            set {
+                this["smtp_server_username"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string smtp_server_password {
+            get {
+                return ((string)(this["smtp_server_password"]));
+            }
+            set {
+                this["smtp_server_password"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string smtp_server_tls {
+            get {
+                return ((string)(this["smtp_server_tls"]));
+            }
+            set {
+                this["smtp_server_tls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string smtp_server_port {
+            get {
+                return ((string)(this["smtp_server_port"]));
+            }
+            set {
+                this["smtp_server_port"] = value;
+            }
+        }
     }
 }

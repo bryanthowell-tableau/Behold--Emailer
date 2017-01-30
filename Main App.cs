@@ -11,6 +11,7 @@ using System.Drawing.Text;
 using Npgsql;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net.Mail;
 
 namespace Behold_Emailer
 {
@@ -147,6 +148,10 @@ namespace Behold_Emailer
             Configurator.SetConfig("tableau_server", tableau_server_url.Text);
             Configurator.SetConfig("repository_pw", repositoryPW.Text);
             Configurator.SetConfig("smtp_server", emailServer.Text);
+            Configurator.SetConfig("smtp_server_username", smtpServerUsername.Text);
+            Configurator.SetConfig("smtp_server_password", smtpServerPassword.Text);
+            Configurator.SetConfig("smtp_server_tls", smtpServerTLS.Text);
+            Configurator.SetConfig("smtp_server_port", smtpServerPort.Text);
             Configurator.SetConfig("text_email_template_filename", textEmailFilename.Text);
             Configurator.SetConfig("html_email_template_filename", htmlEmailFilename.Text);
             Configurator.SetConfig("email_sender", emailSender.Text);
@@ -186,6 +191,10 @@ namespace Behold_Emailer
             tableau_server_url.Text = Configurator.GetConfig("tableau_server");
             repositoryPW.Text = Configurator.GetConfig("repository_pw");
             emailServer.Text = Configurator.GetConfig("smtp_server");
+            smtpServerUsername.Text = Configurator.GetConfig("smtp_server_username");
+            smtpServerPassword.Text = Configurator.GetConfig("smtp_server_password");
+            smtpServerTLS.Text = Configurator.GetConfig("smtp_server_tls");
+            smtpServerPort.Text = Configurator.GetConfig("smtp_server_port");
             textEmailFilename.Text = Configurator.GetConfig("text_email_template_filename");
             htmlEmailFilename.Text = Configurator.GetConfig("html_email_template_filename");
             emailSender.Text = Configurator.GetConfig("email_sender");
@@ -396,7 +405,8 @@ namespace Behold_Emailer
                 Tabcmd tabcmd = new Tabcmd(tabcmdProgramLocation.Text, tableau_server_url.Text, server_admin_username.Text, server_password.Text, testSite.Text,
                     tabcmdConfigLocation.Text, tabrep, this.logger);
                 
-                BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, emailServer.Text, "", "");
+                // Emailer here is used because the Watermarking is built in there. Would it make more sense to move it to Tabcmd eventually, or its own class?
+                BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, emailServer.Text);
                 Watermarker wm = new Watermarker();
                 string[] page_locations = { "top_left", "top_center", "top_right", "bottom_left", "bottom_center", "bottom_right" };
                 foreach (string page_location in page_locations)
@@ -467,7 +477,21 @@ namespace Behold_Emailer
                 Tabcmd tabcmd = new Tabcmd(tabcmdProgramLocation.Text, tableau_server_url.Text, server_admin_username.Text, server_password.Text, testSite.Text,
                     tabcmdConfigLocation.Text, tabrep, this.logger);
 
-                BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, emailServer.Text, "", "");
+                SmtpClient smtp_client = new SmtpClient(emailServer.Text);
+                // Set all of the SMTP Server options
+                if (smtpServerPort.Text != "")
+                {
+                    smtp_client.Port = Int32.Parse(smtpServerPort.Text);
+                }
+                if (smtpServerTLS.Text == "Yes")
+                {
+                    smtp_client.EnableSsl = true;
+                }
+                if (smtpServerUsername.Text != "" && smtpServerPassword.Text != "")
+                {
+                    smtp_client.Credentials = new System.Net.NetworkCredential(smtpServerUsername.Text, smtpServerPassword.Text);
+                }
+                BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, smtp_client);
                 tabemailer.logger = this.logger;
                 tabemailer.html_email_template_filename = htmlEmailFilename.Text;
                 tabemailer.text_email_template_filename = textEmailFilename.Text;

@@ -41,11 +41,22 @@ namespace Behold_Emailer
             this.export_archive_folder = null;
         }
 
-        public BeholdEmailer(Tabcmd Tabcmd, string smtp_server, string smtp_username, string smtp_password)
+        public BeholdEmailer(Tabcmd Tabcmd, string smtp_server)
         {
             this.tabcmd = Tabcmd;
             this.tableau_server_url = this.tabcmd.tableau_server_url;
             this.smtp_server = new SmtpClient(smtp_server);
+            this.html_email_template_filename = "";
+            this.text_email_template_filename = "";
+            this.logger = null;
+            this.export_archive_folder = null;
+        }
+
+        public BeholdEmailer(Tabcmd Tabcmd, SmtpClient smtp_client)
+        {
+            this.tabcmd = Tabcmd;
+            this.tableau_server_url = this.tabcmd.tableau_server_url;
+            this.smtp_server = smtp_client;
             this.html_email_template_filename = "";
             this.text_email_template_filename = "";
             this.logger = null;

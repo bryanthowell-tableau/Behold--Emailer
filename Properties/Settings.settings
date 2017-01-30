@@ -62,5 +62,17 @@
     <Setting Name="bottomRight" Type="Behold_Emailer.SerializableStringDictionary" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="smtp_server_username" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="smtp_server_password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="smtp_server_tls" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="smtp_server_port" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
