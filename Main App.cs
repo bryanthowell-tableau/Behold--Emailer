@@ -466,43 +466,77 @@ namespace Behold_Emailer
 
         /*
          * Main E-mailing methods (used by test and schedule)
-         */ 
+         */
+
+        public SmtpClient create_smtp_client_from_config()
+        {
+            SmtpClient smtp_client = new SmtpClient(emailServer.Text);
+            // Set all of the SMTP Server options
+            if (smtpServerPort.Text != "")
+            {
+                smtp_client.Port = Int32.Parse(smtpServerPort.Text);
+            }
+            if (smtpServerTLS.Text == "Yes")
+            {
+                smtp_client.EnableSsl = true;
+            }
+            if (smtpServerUsername.Text != "" && smtpServerPassword.Text != "")
+            {
+                smtp_client.Credentials = new System.Net.NetworkCredential(smtpServerUsername.Text, smtpServerPassword.Text);
+            }
+            return smtp_client;
+        }
+
+        private BeholdEmailer create_behold_emailer_from_config()
+        {
+            TableauRepository tabrep = new TableauRepository(tableau_server_url.Text, repositoryPW.Text, "readonly");
+            tabrep.logger = this.logger;
+            Tabcmd tabcmd = new Tabcmd(tabcmdProgramLocation.Text, tableau_server_url.Text, server_admin_username.Text, server_password.Text, testSite.Text,
+                tabcmdConfigLocation.Text, tabrep, this.logger);
+
+
+            BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, this.create_smtp_client_from_config());
+            tabemailer.logger = this.logger;
+            tabemailer.html_email_template_filename = htmlEmailFilename.Text;
+            tabemailer.text_email_template_filename = textEmailFilename.Text;
+            return tabemailer;
+        }
+
+        private BeholdEmailer create_behold_emailer_from_config(string site)
+        {
+            TableauRepository tabrep = new TableauRepository(tableau_server_url.Text, repositoryPW.Text, "readonly");
+            tabrep.logger = this.logger;
+            Tabcmd tabcmd = new Tabcmd(tabcmdProgramLocation.Text, tableau_server_url.Text, server_admin_username.Text, server_password.Text, site,
+                tabcmdConfigLocation.Text, tabrep, this.logger);
+
+
+            BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, this.create_smtp_client_from_config());
+            tabemailer.logger = this.logger;
+            tabemailer.html_email_template_filename = htmlEmailFilename.Text;
+            tabemailer.text_email_template_filename = textEmailFilename.Text;
+            return tabemailer;
+        }
+
+        private Watermarker create_watermarker_from_config()
+        {
+            Watermarker wm = new Watermarker();
+            string[] page_locations = { "top_left", "top_center", "top_right", "bottom_left", "bottom_center", "bottom_right" };
+            foreach (string page_location in page_locations)
+            {
+
+                string settingsPageLocation = page_location.Split('_')[0] + page_location.Split('_')[1].First() + page_location.Split('_')[1].Substring(1);
+                wm.setPageLocationWatermarkFromConfig(page_location, Configurator.GetConfigSerializableStringDict(settingsPageLocation));
+            }
+            return wm;
+        }
+
         public bool send_email(string schedule_name)
         {
 
             try
             {
-                TableauRepository tabrep = new TableauRepository(tableau_server_url.Text, repositoryPW.Text, "readonly");
-                tabrep.logger = this.logger;
-                Tabcmd tabcmd = new Tabcmd(tabcmdProgramLocation.Text, tableau_server_url.Text, server_admin_username.Text, server_password.Text, testSite.Text,
-                    tabcmdConfigLocation.Text, tabrep, this.logger);
-
-                SmtpClient smtp_client = new SmtpClient(emailServer.Text);
-                // Set all of the SMTP Server options
-                if (smtpServerPort.Text != "")
-                {
-                    smtp_client.Port = Int32.Parse(smtpServerPort.Text);
-                }
-                if (smtpServerTLS.Text == "Yes")
-                {
-                    smtp_client.EnableSsl = true;
-                }
-                if (smtpServerUsername.Text != "" && smtpServerPassword.Text != "")
-                {
-                    smtp_client.Credentials = new System.Net.NetworkCredential(smtpServerUsername.Text, smtpServerPassword.Text);
-                }
-                BeholdEmailer tabemailer = new BeholdEmailer(tabcmd, smtp_client);
-                tabemailer.logger = this.logger;
-                tabemailer.html_email_template_filename = htmlEmailFilename.Text;
-                tabemailer.text_email_template_filename = textEmailFilename.Text;
-                Watermarker wm = new Watermarker();
-                string[] page_locations = { "top_left", "top_center", "top_right", "bottom_left", "bottom_center", "bottom_right" };
-                foreach (string page_location in page_locations)
-                {
-
-                    string settingsPageLocation = page_location.Split('_')[0] + page_location.Split('_')[1].First() + page_location.Split('_')[1].Substring(1);
-                    wm.setPageLocationWatermarkFromConfig(page_location, Configurator.GetConfigSerializableStringDict(settingsPageLocation));
-                }
+                BeholdEmailer tabemailer = this.create_behold_emailer_from_config();
+                Watermarker wm = this.create_watermarker_from_config();
 
                 try
                 {
@@ -517,7 +551,7 @@ namespace Behold_Emailer
                     else
                     {
                         
-                        result = tabemailer.generate_email_from_view(emailSender.Text, testEmailRecipient.Text, testEmailSubject.Text, "Please see attached Tableau PDF", testUsernameForImpersonation.Text,
+                        result = tabemailer.generate_email_from_view(emailSender.Text, new string[1]{testEmailRecipient.Text}, new string[0]{}, new string[0]{}, testEmailSubject.Text, "Please see attached Tableau PDF", testUsernameForImpersonation.Text,
                         testViewLocation.Text, "fullpdf", new Dictionary<String, String>(), wm);
                     }
 
@@ -538,6 +572,159 @@ namespace Behold_Emailer
             
         }
 
+        public bool send_email()
+        {
+            try
+            {
+                BeholdEmailer tabemailer = this.create_behold_emailer_from_config();
+                Watermarker wm = this.create_watermarker_from_config();
+
+                try
+                {
+                    bool result;
+
+
+                    result = tabemailer.generate_email_from_view(emailSender.Text, new string[1] { testEmailRecipient.Text }, new string[0] { }, new string[0] { }, testEmailSubject.Text, "Please see attached Tableau PDF", testUsernameForImpersonation.Text,
+                    testViewLocation.Text, "fullpdf", new Dictionary<String, String>(), wm);
+
+                    return result;
+                }
+                catch (ConfigurationException ce)
+                {
+
+                    this.logger.Log(ce.Message);
+                    return false;
+                }
+            }
+            // From Repository Failing
+            catch (ConfigurationException ce)
+            {
+                this.logger.Log(ce.Message);
+                return false;
+            }
+        }
+
+        public bool send_email(string site, string[] email_to, string[] email_cc, string[] email_bcc, string email_subject, string username_for_impersonation, string view_location, Dictionary<String, String> view_filter_dictionary)
+        {
+            try
+            {
+                BeholdEmailer tabemailer = this.create_behold_emailer_from_config(site);
+                Watermarker wm = this.create_watermarker_from_config();
+
+                try
+                {
+                    bool result;
+
+
+                    result = tabemailer.generate_email_from_view(emailSender.Text, email_to, email_cc, email_bcc, email_subject, "Please see attached Tableau PDF", username_for_impersonation,
+                    view_location, "fullpdf", view_filter_dictionary, wm);
+
+                    return result;
+                }
+                catch (ConfigurationException ce)
+                {
+
+                    this.logger.Log(ce.Message);
+                    return false;
+                }
+            }
+            // From Repository Failing
+            catch (ConfigurationException ce)
+            {
+                this.logger.Log(ce.Message);
+                return false;
+            }
+        }
+
+
+        /*
+         * Bulk Send Tab
+         */
+        private void loadCSV_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void sendBulkEmails_Click(object sender, EventArgs e)
+        {
+            // Reset the sending messages
+            foreach (DataGridViewRow row in bulkEmailPreview.Rows)
+            {
+                row.Cells["Status"].Value = "";
+            }
+            // Run through and send the e-mails
+            foreach (DataGridViewRow row in bulkEmailPreview.Rows)
+            {
+                row.Cells["Status"].Value = "Sending...";
+                row.Selected = true;
+                string raw_to = (string)row.Cells["To:"].Value.ToString();
+                if (raw_to == null)
+                {
+                    continue;
+                }
+                var email_to = raw_to.Split(';');
+                string raw_cc = (string)row.Cells["CC:"].Value.ToString();
+                var email_cc = raw_cc.Split(';');
+                string raw_bcc = (string)row.Cells["BCC:"].Value.ToString();
+                var email_bcc = raw_bcc.Split(';');
+                string view_location = (string)row.Cells["View Location"].Value.ToString();
+                string site = (string)row.Cells["Site"].Value.ToString();
+
+                // Skip if there is no view location or site
+                if (view_location == "" || site == "")
+                {
+                    row.Cells["Status"].Value = "Invalid";
+                    row.Selected = false;
+                    continue;
+                }
+
+                // Implement multiple to
+                
+
+                Dictionary<string, string> filters_dict = new Dictionary<string, string>();
+                
+                // Up to 25 filters (no one would realistically go this high)
+                int j = 1;
+                while (j <= 25){
+                    string filter_field_key = String.Format("Filter Field Name {0}", j.ToString());
+                    string filter_values_key = String.Format("Filter Values {0}", j.ToString());
+                    if (!bulkEmailPreview.Columns.Contains(filter_field_key) || !bulkEmailPreview.Columns.Contains(filter_values_key))
+                    {
+                        break;
+                    }
+                    if (row.Cells[filter_field_key].ValueType != typeof(DBNull)){
+                        string filter_field_name = (string)row.Cells[filter_field_key].Value.ToString();
+                        
+                        string filter_values_list_raw = (string)row.Cells[filter_values_key].Value.ToString();
+
+                    
+                        // Swap the semi-colons for commas as needed in the dict
+                        string[] filter_values_list = filter_values_list_raw.Split(';');
+                        // Skip if there's nothing in the first split value
+                        if (filter_values_list[0] == "")
+                        {
+                            j++;
+                            continue;
+                        }
+                        string[] encoded_filters = new string[filter_values_list.Length];
+                        for (int i = 0; i < filter_values_list.Length; i++)
+                        {
+                            // Gotta double the % sign because batch files use %2 as a replacement token.
+                            encoded_filters[i] = Uri.EscapeUriString(filter_values_list[i]).Replace("%", "%%");
+                        }
+                        // Figure out how not to add if empty
+                        string final_value_param = String.Join(",", encoded_filters);
+
+                        filters_dict.Add(filter_field_name, final_value_param);
+                    }
+                    j++;
+                }
+ 
+                this.send_email(site, email_to, email_cc, email_bcc, bulkEmailSubject.Text, bulkUsernameToImpersonateAs.Text, view_location, filters_dict);
+                row.Cells["Status"].Value = "Sent";
+                row.Selected = false;
+            }
+        }
         /*
          * Tableau Server Settings Tab Events
          */ 
@@ -581,6 +768,72 @@ namespace Behold_Emailer
                 string filename = htmlEmailPicker.FileName;
                 this.htmlEmailFilename.Text = filename;
             }
+        }
+
+        private void pickBulkCSVFile_Click(object sender, EventArgs e)
+        {
+            DialogResult result = htmlEmailPicker.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string filename = htmlEmailPicker.FileName;
+                // Graciously taken from https://social.msdn.microsoft.com/Forums/vstudio/en-US/859ff0ed-40f9-41df-bf81-b8413465d053/csv-import-using-c?forum=csharpgeneral
+                System.Data.Odbc.OdbcConnection conn;
+                DataTable dt = new DataTable();
+                System.Data.Odbc.OdbcDataAdapter da;
+                string file = System.IO.Path.GetFileName(filename);
+                string folder = System.IO.Path.GetDirectoryName(filename);
+                
+
+                // Gotta construct a schema.ini file that specifies everything come in as text
+                // http://stackoverflow.com/questions/1688497/load-csv-into-oledb-and-force-all-inferred-datatypes-to-string
+
+                // Open connection once to get the schema info
+                conn = new System.Data.Odbc.OdbcConnection(@"Driver={Microsoft Text Driver (*.txt; *.csv)};Dbq=" + folder + ";Extensions=asc,csv,tab,txt;Persist Security Info=False;");
+                da = new System.Data.Odbc.OdbcDataAdapter("select * from [" + file + "]", conn);
+                da.Fill(dt);
+
+                StringBuilder schema = new StringBuilder();
+                schema.AppendLine("[" + file + "]");
+                schema.AppendLine("ColNameHeader=True");
+                // Validate that the minimum headers exist
+                Dictionary<string, bool> required_fields = new Dictionary<string, bool> { {"To:", false}, {"CC:", false}, {"BCC:", false},
+                                                                                          {"Site", false}, {"View Location", false}};
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    if (required_fields.ContainsKey(dt.Columns[i].ColumnName))
+                    {
+                        required_fields[dt.Columns[i].ColumnName] = true;
+                    }
+                }
+
+                // Break if headers not correct
+
+                if (required_fields.ContainsValue(false))
+                {
+                    MessageBox.Show("CSV headers are not correct. The correct format is:\nTo:,CC:,BCC:,Site,View Location,Filter Field Name 1,Filter Values 1,...");
+                    return;
+                }
+
+
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    schema.AppendLine("col" + (i + 1).ToString() + "=\"" + dt.Columns[i].ColumnName + "\" Text");
+                }
+                string schemaFileName = folder + @"\Schema.ini";
+                TextWriter tw = new StreamWriter(schemaFileName);
+                tw.WriteLine(schema.ToString());
+                tw.Close();
+
+                // Open again, schema.ini should be in use
+                DataTable dt2 = new DataTable();
+                conn = new System.Data.Odbc.OdbcConnection(@"Driver={Microsoft Text Driver (*.txt; *.csv)};Dbq=" + folder + ";Extensions=asc,csv,tab,txt;Persist Security Info=False;");
+                da = new System.Data.Odbc.OdbcDataAdapter("select * from [" + file + "]", conn);
+                da.Fill(dt2);
+                bulkEmailPreview.DataSource = dt2;
+                // Clean out the schema file
+                File.Delete(schemaFileName);
+            }
+
         }
 
         private void validateTextBox(object sender, CancelEventArgs e)
@@ -737,6 +990,10 @@ namespace Behold_Emailer
             Configurator.EncryptConfig();
         }
 
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }

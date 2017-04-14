@@ -71,7 +71,7 @@ namespace Behold_Emailer
             }
         }
 
-        public void email_file_from_template(string from_user, string to_user, string subject, string simple_message_text, string filename_to_attach)
+        public void email_file_from_template(string from_user, string[] to_users, string[] cc_users, string[] bcc_users, string subject, string simple_message_text, string filename_to_attach)
         {
             string message_text = "";
             // Load Text template
@@ -93,9 +93,32 @@ namespace Behold_Emailer
                 message_text = simple_message_text;
             }
 
-            MailMessage message = new MailMessage(from_user, to_user);
+            MailMessage message = new MailMessage(from_user, to_users[0]);
             message.Body = message_text;
             message.Subject = subject;
+
+            var to_collect = message.To;
+            var cc_collect = message.CC;
+            var bcc_collect = message.Bcc;
+            for (var i = 1; i < to_users.Length; i++)
+            {
+                var add = new MailAddress(to_users[i]);
+                to_collect.Add(add);
+            }
+
+            for (var i = 0; i < cc_users.Length; i++)
+            {
+                if (cc_users[i] == "") { continue; }
+                var add = new MailAddress(cc_users[i]);
+                cc_collect.Add(add);
+            }
+
+            for (var i = 0; i < bcc_users.Length; i++)
+            {
+                if (bcc_users[i] == "") { continue; }
+                var add = new MailAddress(bcc_users[i]);
+                bcc_collect.Add(add);
+            }
 
             // Load HTML template as alternative
             if (this.html_email_template_filename != "")
@@ -127,7 +150,7 @@ namespace Behold_Emailer
         public string generate_export_and_watermark(string view_user, string view_location, string content_type, 
             Dictionary<string, string> view_filter_dictionary, Watermarker watermark)
         {
-            string filename_to_attach = this.tabcmd.create_export(content_type, view_location, new Dictionary<string, string>(), view_user, "exported_workbook");
+            string filename_to_attach = this.tabcmd.create_export(content_type, view_location, view_filter_dictionary, view_user, "exported_workbook");
             this.log(String.Format("PDF created and saved successfully as {0}", filename_to_attach));
 
             // Watermark the PDF (working copy)
@@ -140,14 +163,14 @@ namespace Behold_Emailer
             return filename_to_attach;          
         }
 
-        public bool generate_email_from_view(string email_from_user, string email_to_user, string email_subject, string email_template_name,
+        public bool generate_email_from_view(string email_from_user, string[] email_to, string[] email_cc, string[] email_bcc, string email_subject, string email_template_name,
             string view_user, string view_location, string email_content_type, Dictionary<string, string> view_filter_dictionary, Watermarker watermark)
         {
             this.log(String.Format("Creating PDF export from tabcmd for {0} for user {1}", view_location, view_user));
             try
             {
 
-                string filename_to_attach = this.generate_export_and_watermark(view_user, view_location, email_content_type, new Dictionary<string, string>(), watermark);
+                string filename_to_attach = this.generate_export_and_watermark(view_user, view_location, email_content_type, view_filter_dictionary, watermark);
                 this.log(String.Format("PDF created and saved successfully as {0}", filename_to_attach));
 
                 // Copy the file with a new name so that it can be archived
@@ -165,8 +188,8 @@ namespace Behold_Emailer
                 
                 File.Copy(filename_to_attach, final_filename, true);
 
-                this.log(String.Format("Sending e-mail of exported and watermarked PDF to {0}", email_to_user));
-                this.email_file_from_template(email_from_user, email_to_user, email_subject, email_template_name, final_filename);
+                this.log(String.Format("Sending e-mail of exported and watermarked PDF to {0}", email_to[0]));
+                this.email_file_from_template(email_from_user, email_to, email_cc, email_bcc, email_subject, email_template_name, final_filename);
                 this.log(String.Format("Removing original file {0}", filename_to_attach));
                 File.Delete(filename_to_attach);
                 
@@ -205,7 +228,7 @@ namespace Behold_Emailer
                 this.log(String.Format("Generating e-mail of view {0} on site {1} for {2} at {3}", view_location, site, user, user_email));
 
 
-                bool result = this.generate_email_from_view(from_user, user_email, email_subject, "", user, view_location, "fullpdf", 
+                bool result = this.generate_email_from_view(from_user, new string[1] {user_email}, new string[0]{}, new string[0]{}, email_subject, "", user, view_location, "fullpdf", 
                     new Dictionary<string,string>(), watermarker);
                 if (all_suceeded == true && result == false){
                     all_suceeded = false;

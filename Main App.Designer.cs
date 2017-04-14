@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.saveConfig = new System.Windows.Forms.Button();
             this.watermarkContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +86,16 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.emailTab = new System.Windows.Forms.TabPage();
+            this.label22 = new System.Windows.Forms.Label();
+            this.smtpServerTLS = new System.Windows.Forms.ComboBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.smtpServerPort = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.smtpServerPassword = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.smtpServerUsername = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.htmlEmailFilename = new System.Windows.Forms.TextBox();
             this.textEmailFilename = new System.Windows.Forms.TextBox();
@@ -99,14 +112,12 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.testEmailSubject = new System.Windows.Forms.TextBox();
             this.testSite = new System.Windows.Forms.TextBox();
             this.testFilename = new System.Windows.Forms.TextBox();
             this.testViewLocation = new System.Windows.Forms.TextBox();
             this.testEmailRecipient = new System.Windows.Forms.TextBox();
             this.testUsernameForImpersonation = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
             this.createExport = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -125,17 +136,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.availableSchedulesList = new System.Windows.Forms.CheckedListBox();
             this.mainTabBar = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.pickBulkCSVFile = new System.Windows.Forms.Button();
+            this.sendBulkEmails = new System.Windows.Forms.Button();
+            this.bulkEmailPreview = new System.Windows.Forms.DataGridView();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.smtpServerUsername = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.smtpServerPassword = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.smtpServerPort = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.smtpServerTLS = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label31 = new System.Windows.Forms.Label();
+            this.testEmailSubject = new System.Windows.Forms.TextBox();
+            this.bulkEmailSubject = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.bulkUsernameToImpersonateAs = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.watermarkContextMenu.SuspendLayout();
             this.configureTab.SuspendLayout();
             this.configureTabBar.SuspendLayout();
@@ -146,6 +158,8 @@
             this.testTab.SuspendLayout();
             this.schedulesTab.SuspendLayout();
             this.mainTabBar.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bulkEmailPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // saveConfig
@@ -687,6 +701,93 @@
             this.emailTab.Text = "E-mail Server";
             this.emailTab.UseVisualStyleBackColor = true;
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(6, 195);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(111, 13);
+            this.label22.TabIndex = 73;
+            this.label22.Text = "Email Body Templates";
+            // 
+            // smtpServerTLS
+            // 
+            this.smtpServerTLS.FormattingEnabled = true;
+            this.smtpServerTLS.Items.AddRange(new object[] {
+            "No",
+            "Yes"});
+            this.smtpServerTLS.Location = new System.Drawing.Point(191, 161);
+            this.smtpServerTLS.Name = "smtpServerTLS";
+            this.smtpServerTLS.Size = new System.Drawing.Size(74, 21);
+            this.smtpServerTLS.TabIndex = 72;
+            this.smtpServerTLS.Text = "No";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(188, 145);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(80, 13);
+            this.label21.TabIndex = 70;
+            this.label21.Text = "Use TLS/SSL?";
+            // 
+            // smtpServerPort
+            // 
+            this.smtpServerPort.Location = new System.Drawing.Point(18, 161);
+            this.smtpServerPort.Name = "smtpServerPort";
+            this.smtpServerPort.Size = new System.Drawing.Size(152, 20);
+            this.smtpServerPort.TabIndex = 67;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(15, 145);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(160, 13);
+            this.label20.TabIndex = 68;
+            this.label20.Text = "SMTP Server Port (if not default)";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 73);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(110, 13);
+            this.label19.TabIndex = 66;
+            this.label19.Text = "SMTP Server Options";
+            // 
+            // smtpServerPassword
+            // 
+            this.smtpServerPassword.Location = new System.Drawing.Point(191, 113);
+            this.smtpServerPassword.Name = "smtpServerPassword";
+            this.smtpServerPassword.Size = new System.Drawing.Size(152, 20);
+            this.smtpServerPassword.TabIndex = 64;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(188, 97);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(120, 13);
+            this.label18.TabIndex = 65;
+            this.label18.Text = "SMTP Server Password";
+            // 
+            // smtpServerUsername
+            // 
+            this.smtpServerUsername.Location = new System.Drawing.Point(18, 113);
+            this.smtpServerUsername.Name = "smtpServerUsername";
+            this.smtpServerUsername.Size = new System.Drawing.Size(152, 20);
+            this.smtpServerUsername.TabIndex = 62;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(15, 97);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(122, 13);
+            this.label17.TabIndex = 63;
+            this.label17.Text = "SMTP Server Username";
+            // 
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(268, 260);
@@ -846,14 +947,6 @@
             this.label13.TabIndex = 54;
             this.label13.Text = "Test Email";
             // 
-            // testEmailSubject
-            // 
-            this.testEmailSubject.Location = new System.Drawing.Point(26, 165);
-            this.testEmailSubject.Name = "testEmailSubject";
-            this.testEmailSubject.Size = new System.Drawing.Size(152, 20);
-            this.testEmailSubject.TabIndex = 15;
-            this.testEmailSubject.Validating += new System.ComponentModel.CancelEventHandler(this.validateTextBox);
-            // 
             // testSite
             // 
             this.testSite.Location = new System.Drawing.Point(26, 32);
@@ -901,15 +994,6 @@
             this.label5.Size = new System.Drawing.Size(25, 13);
             this.label5.TabIndex = 11;
             this.label5.Text = "Site";
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(23, 149);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(95, 13);
-            this.label31.TabIndex = 53;
-            this.label31.Text = "Test Email Subject";
             // 
             // createExport
             // 
@@ -1089,98 +1173,143 @@
             this.mainTabBar.Controls.Add(this.schedulesTab);
             this.mainTabBar.Controls.Add(this.testTab);
             this.mainTabBar.Controls.Add(this.configureTab);
+            this.mainTabBar.Controls.Add(this.tabPage1);
             this.mainTabBar.Location = new System.Drawing.Point(24, 16);
             this.mainTabBar.Name = "mainTabBar";
             this.mainTabBar.SelectedIndex = 0;
             this.mainTabBar.Size = new System.Drawing.Size(405, 343);
             this.mainTabBar.TabIndex = 2;
             // 
-            // smtpServerUsername
+            // tabPage1
             // 
-            this.smtpServerUsername.Location = new System.Drawing.Point(18, 113);
-            this.smtpServerUsername.Name = "smtpServerUsername";
-            this.smtpServerUsername.Size = new System.Drawing.Size(152, 20);
-            this.smtpServerUsername.TabIndex = 62;
+            this.tabPage1.Controls.Add(this.bulkUsernameToImpersonateAs);
+            this.tabPage1.Controls.Add(this.label24);
+            this.tabPage1.Controls.Add(this.bulkEmailSubject);
+            this.tabPage1.Controls.Add(this.label23);
+            this.tabPage1.Controls.Add(this.pickBulkCSVFile);
+            this.tabPage1.Controls.Add(this.sendBulkEmails);
+            this.tabPage1.Controls.Add(this.bulkEmailPreview);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(397, 317);
+            this.tabPage1.TabIndex = 9;
+            this.tabPage1.Text = "Bulk";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
-            // label17
+            // pickBulkCSVFile
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(15, 97);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(122, 13);
-            this.label17.TabIndex = 63;
-            this.label17.Text = "SMTP Server Username";
+            this.pickBulkCSVFile.Location = new System.Drawing.Point(272, 87);
+            this.pickBulkCSVFile.Name = "pickBulkCSVFile";
+            this.pickBulkCSVFile.Size = new System.Drawing.Size(116, 23);
+            this.pickBulkCSVFile.TabIndex = 61;
+            this.pickBulkCSVFile.Text = "Load from CSV";
+            this.pickBulkCSVFile.UseVisualStyleBackColor = true;
+            this.pickBulkCSVFile.Click += new System.EventHandler(this.pickBulkCSVFile_Click);
             // 
-            // smtpServerPassword
+            // sendBulkEmails
             // 
-            this.smtpServerPassword.Location = new System.Drawing.Point(191, 113);
-            this.smtpServerPassword.Name = "smtpServerPassword";
-            this.smtpServerPassword.Size = new System.Drawing.Size(152, 20);
-            this.smtpServerPassword.TabIndex = 64;
+            this.sendBulkEmails.Location = new System.Drawing.Point(6, 288);
+            this.sendBulkEmails.Name = "sendBulkEmails";
+            this.sendBulkEmails.Size = new System.Drawing.Size(75, 23);
+            this.sendBulkEmails.TabIndex = 3;
+            this.sendBulkEmails.Text = "Send Emails";
+            this.sendBulkEmails.UseVisualStyleBackColor = true;
+            this.sendBulkEmails.Click += new System.EventHandler(this.sendBulkEmails_Click);
             // 
-            // label18
+            // bulkEmailPreview
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(188, 97);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(120, 13);
-            this.label18.TabIndex = 65;
-            this.label18.Text = "SMTP Server Password";
+            this.bulkEmailPreview.AllowUserToAddRows = false;
+            this.bulkEmailPreview.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.bulkEmailPreview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.bulkEmailPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.bulkEmailPreview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Status});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.bulkEmailPreview.DefaultCellStyle = dataGridViewCellStyle2;
+            this.bulkEmailPreview.Location = new System.Drawing.Point(3, 116);
+            this.bulkEmailPreview.Name = "bulkEmailPreview";
+            this.bulkEmailPreview.ReadOnly = true;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.bulkEmailPreview.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.bulkEmailPreview.ShowEditingIcon = false;
+            this.bulkEmailPreview.Size = new System.Drawing.Size(385, 166);
+            this.bulkEmailPreview.TabIndex = 1;
             // 
-            // label19
+            // Status
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 73);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(110, 13);
-            this.label19.TabIndex = 66;
-            this.label19.Text = "SMTP Server Options";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
             // 
-            // smtpServerPort
+            // label31
             // 
-            this.smtpServerPort.Location = new System.Drawing.Point(18, 161);
-            this.smtpServerPort.Name = "smtpServerPort";
-            this.smtpServerPort.Size = new System.Drawing.Size(152, 20);
-            this.smtpServerPort.TabIndex = 67;
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(23, 149);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(95, 13);
+            this.label31.TabIndex = 53;
+            this.label31.Text = "Test Email Subject";
             // 
-            // label20
+            // testEmailSubject
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(15, 145);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(160, 13);
-            this.label20.TabIndex = 68;
-            this.label20.Text = "SMTP Server Port (if not default)";
+            this.testEmailSubject.Location = new System.Drawing.Point(26, 165);
+            this.testEmailSubject.Name = "testEmailSubject";
+            this.testEmailSubject.Size = new System.Drawing.Size(152, 20);
+            this.testEmailSubject.TabIndex = 15;
+            this.testEmailSubject.Validating += new System.ComponentModel.CancelEventHandler(this.validateTextBox);
             // 
-            // label21
+            // bulkEmailSubject
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(188, 145);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(80, 13);
-            this.label21.TabIndex = 70;
-            this.label21.Text = "Use TLS/SSL?";
+            this.bulkEmailSubject.Location = new System.Drawing.Point(9, 31);
+            this.bulkEmailSubject.Name = "bulkEmailSubject";
+            this.bulkEmailSubject.Size = new System.Drawing.Size(152, 20);
+            this.bulkEmailSubject.TabIndex = 62;
             // 
-            // smtpServerTLS
+            // label23
             // 
-            this.smtpServerTLS.FormattingEnabled = true;
-            this.smtpServerTLS.Items.AddRange(new object[] {
-            "No",
-            "Yes"});
-            this.smtpServerTLS.Location = new System.Drawing.Point(191, 161);
-            this.smtpServerTLS.Name = "smtpServerTLS";
-            this.smtpServerTLS.Size = new System.Drawing.Size(74, 21);
-            this.smtpServerTLS.TabIndex = 72;
-            this.smtpServerTLS.Text = "No";
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(6, 15);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(71, 13);
+            this.label23.TabIndex = 63;
+            this.label23.Text = "Email Subject";
             // 
-            // label22
+            // bulkUsernameToImpersonateAs
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(6, 195);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(111, 13);
-            this.label22.TabIndex = 73;
-            this.label22.Text = "Email Body Templates";
+            this.bulkUsernameToImpersonateAs.Location = new System.Drawing.Point(9, 79);
+            this.bulkUsernameToImpersonateAs.Name = "bulkUsernameToImpersonateAs";
+            this.bulkUsernameToImpersonateAs.Size = new System.Drawing.Size(152, 20);
+            this.bulkUsernameToImpersonateAs.TabIndex = 64;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(6, 63);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(143, 13);
+            this.label24.TabIndex = 65;
+            this.label24.Text = "Username to Impersonate As";
             // 
             // Configure
             // 
@@ -1209,6 +1338,9 @@
             this.schedulesTab.ResumeLayout(false);
             this.schedulesTab.PerformLayout();
             this.mainTabBar.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bulkEmailPreview)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1282,14 +1414,12 @@
         private System.Windows.Forms.TabPage testTab;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox testEmailSubject;
         private System.Windows.Forms.TextBox testSite;
         private System.Windows.Forms.TextBox testFilename;
         private System.Windows.Forms.TextBox testViewLocation;
         private System.Windows.Forms.TextBox testEmailRecipient;
         private System.Windows.Forms.TextBox testUsernameForImpersonation;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Button createExport;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label4;
@@ -1322,6 +1452,17 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.ComboBox smtpServerTLS;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.DataGridView bulkEmailPreview;
+        private System.Windows.Forms.Button sendBulkEmails;
+        private System.Windows.Forms.Button pickBulkCSVFile;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Status;
+        private System.Windows.Forms.TextBox testEmailSubject;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.TextBox bulkUsernameToImpersonateAs;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox bulkEmailSubject;
+        private System.Windows.Forms.Label label23;
     }
 }
 

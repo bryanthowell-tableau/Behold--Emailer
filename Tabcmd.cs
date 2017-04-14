@@ -8,6 +8,8 @@ using System.Xml;
 using System.Runtime.Serialization.Json;
 using Npgsql;
 using System.Diagnostics;
+using System.Net;
+using System.Web;
 
 namespace Behold_Emailer
 {
@@ -167,6 +169,26 @@ namespace Behold_Emailer
             string additional_url_params = "";
             if (view_filter_dictionary != null)
             {
+                
+               // WebUtility.HtmlEncode
+                var first_param = 0;
+                foreach (KeyValuePair<string, string> pair in view_filter_dictionary)
+                {
+                    if (first_param == 0){
+                        additional_url_params += "?";
+                        first_param++;
+                    }
+                    else {
+                        additional_url_params += "&";
+                    }
+                    // Gotta double the % sign because batch files use %2 as a replacement token.
+                    additional_url_params += Uri.EscapeUriString(pair.Key).Replace("%","%%") + "=" + (pair.Value);
+                }
+
+                if (refresh == true)
+                {
+                    additional_url_params += "&:refresh";
+                }
             }
             else if (view_filter_dictionary == null)
             {
@@ -241,7 +263,7 @@ namespace Behold_Emailer
 
             //cmds[1] = String.Format("del \"{0}\"", saved_filename);
             cmds[1] = this.build_export_cmd(export_type, saved_filename, view_location, view_filter_dictionary, false);
-
+            
             try
             {
                 File.WriteAllLines("export.bat", cmds);
